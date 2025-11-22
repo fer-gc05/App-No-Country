@@ -1,10 +1,6 @@
-from .api import login, register, logout, refresh, me
-from django.urls import path
+from django.urls import path, include
 
 urlpatterns = [
-    path('login/', login, name='login'),
-    path('register/', register, name='register'),
-    path('logout/', logout, name='logout'),
-    path('refresh/', refresh, name='refresh'),
-    path('me/', me, name='me'),
+    path("", include("dj_rest_auth.urls")),                     # login/logout/password
+    path("registration/", include("dj_rest_auth.registration.urls")),  # register
 ]

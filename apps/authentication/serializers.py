@@ -1,17 +1,15 @@
+from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
-from django.contrib.auth.models import User
 
-class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True)
+class CustomRegisterSerializer(RegisterSerializer):
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
 
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'email', 'password']
+    def save(self, request):
+        user = super().save(request)
 
-    def create(self, validated_data):
-        # Use Django's create_user to ensure password is hashed
-        password = validated_data.pop('password')
-        user = User.objects.create_user(**validated_data)
-        user.set_password(password)
+        user.first_name = self.validated_data.get("first_name")
+        user.last_name = self.validated_data.get("last_name")
         user.save()
+
         return user
